@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Property Command Center — Denmark & Stone Gate Lake</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#0f172a;font-size:14px;min-height:100vh;}
+:root{--c1:#14b8a6;--c2:#0ea5e9;}
+.app{max-width:900px;margin:0 auto;}
+.hdr{background:white;border-bottom:1px solid #e2e8f0;padding:14px 18px;position:sticky;top:0;z-index:10;box-shadow:0 1px 3px rgba(0,0,0,0.06);}
+.content{padding:18px;}
+.btn{display:inline-flex;align-items:center;gap:5px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;padding:7px 13px;cursor:pointer;font-size:12px;color:#475569;font-family:inherit;transition:all 0.15s;}
+.btn:hover{background:#e2e8f0;color:#0f172a;}
+.btn.active{background:#dbeafe;border-color:#93c5fd;color:#1d4ed8;font-weight:500;}
+.btn.h1a{background:#ccfbf1;border-color:#5eead4;color:#0f766e;}
+.btn.h2a{background:#e0f2fe;border-color:#7dd3fc;color:#0369a1;}
+.btn.rpt{background:#0f172a;color:white;border-color:#0f172a;font-weight:500;}
+.btn.rpt:hover{background:#1e293b;}
+.card{background:white;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;}
+[data-tab]:not([data-active]){display:none!important;}
+.trow{display:flex;align-items:flex-start;gap:12px;padding:10px 8px;border-radius:8px;cursor:pointer;}
+.trow:hover{background:#f8fafc;}
+.chk{width:20px;height:20px;min-width:20px;border-radius:4px;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;transition:all 0.15s;margin-top:1px;flex-shrink:0;}
+.pbar{height:4px;background:#f1f5f9;border-radius:2px;overflow:hidden;}
+.pfill{height:100%;border-radius:2px;transition:width 0.4s;}
+.tag{font-size:10px;padding:2px 8px;border-radius:20px;background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0;}
+.sec-hdr{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:600;margin:16px 0 8px;}
+input{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:7px 10px;color:#0f172a;font-family:inherit;font-size:12px;width:100%;}
+input:focus{outline:none;border-color:#94a3b8;background:white;}
+textarea{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px;color:#0f172a;font-family:inherit;font-size:13px;width:100%;line-height:1.7;resize:vertical;}
+textarea:focus{outline:none;border-color:#94a3b8;background:white;}
+#pm{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:100;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;}
+#pm.open{display:flex;}
+#pb{background:white;border-radius:16px;padding:24px;max-width:720px;width:100%;margin:auto;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:2px;}
+@media print{
+  .hdr,.no-print,#pm{display:none!important;}
+  .print-only{display:block!important;}
+  body{background:white;}
+  .app{max-width:100%;}
+}
+.print-only{display:none;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="hdr">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+    <div>
+      <div style="font-size:17px;font-weight:700;color:#0f172a;"><i class="ti ti-building-community"></i> Property Command Center</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:2px;" id="hdr-date"></div>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center;">
+      <button class="btn h1a" id="hb-dk" onclick="switchHome('denmark')"><i class="ti ti-home"></i> 1230 Denmark</button>
+      <button class="btn" id="hb-sg" onclick="switchHome('stonegate')"><i class="ti ti-waves"></i> Stone Gate Lake</button>
+      <button class="btn rpt" onclick="openReport()"><i class="ti ti-printer"></i> Report for Bekah</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:4px;flex-wrap:wrap;">
+    <button class="btn active" id="nav-overview" onclick="goTab('overview')"><i class="ti ti-layout-dashboard"></i> Overview</button>
+    <button class="btn" id="nav-schedule" onclick="goTab('schedule')"><i class="ti ti-calendar"></i> Schedule</button>
+    <button class="btn" id="nav-contacts" onclick="goTab('contacts')"><i class="ti ti-address-book"></i> Contacts</button>
+    <button class="btn" id="nav-checklists" onclick="goTab('checklists')"><i class="ti ti-list-check"></i> Checklists</button>
+    <button class="btn" id="nav-notes" onclick="goTab('notes')"><i class="ti ti-notes"></i> Notes</button>
+  </div>
+</div>
+
+<div class="content">
+  <div data-tab="overview" data-active id="tab-overview"></div>
+  <div data-tab="schedule" id="tab-schedule"></div>
+  <div data-tab="contacts" id="tab-contacts"></div>
+  <div data-tab="checklists" id="tab-checklists"></div>
+  <div data-tab="notes" id="tab-notes"></div>
+</div>
+
+</div>
+
+<!-- PRINT MODAL -->
+<div id="pm">
+  <div id="pb">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:8px;" class="no-print">
+      <div style="font-size:16px;font-weight:700;"><i class="ti ti-file-report"></i> Property Report for Bekah</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;">
+        <button class="btn" onclick="copyRpt()"><i class="ti ti-copy"></i> Copy Text</button>
+        <button class="btn rpt" onclick="window.print()"><i class="ti ti-printer"></i> Print / Save PDF</button>
+        <button class="btn" onclick="closeReport()"><i class="ti ti-x"></i> Close</button>
+      </div>
+    </div>
+    <div id="rpt-content"></div>
+  </div>
+</div>
+
+<!-- PRINT ONLY LAYER -->
+<div class="print-only" id="print-only"></div>
+
+<script>
+const TASKS=[
+  {id:'pest',l:'Pest Control',ic:'ti-bug',f:'monthly',mo:[0,1,2,3,4,5,6,7,8,9,10,11],h:['denmark','stonegate'],n:'DIY — inspect perimeter, apply treatment every month'},
+  {id:'hvac_f',l:'HVAC Filter',ic:'ti-wind',f:'monthly',mo:[0,1,2,3,4,5,6,7,8,9,10,11],h:['denmark','stonegate'],n:'Check & replace. 1-inch filters: monthly. 4-inch: every 3 months.'},
+  {id:'dehum',l:'Dehumidifier',ic:'ti-droplet',f:'monthly',mo:[0,1,2,3,4,5,6,7,8,9,10,11],h:['denmark'],n:'Empty reservoir, clean filter, verify 45–55% humidity'},
+  {id:'smoke',l:'Smoke Detector Test',ic:'ti-flame',f:'quarterly',mo:[0,3,6,9],h:['denmark','stonegate'],n:'Test all units, replace 9V batteries. Replace detectors every 10 years.'},
+  {id:'co',l:'CO Detector Test',ic:'ti-alert-triangle',f:'quarterly',mo:[0,3,6,9],h:['denmark','stonegate'],n:'Test CO detectors. Replace every 5–7 years. Check manufacture date.'},
+  {id:'hvac_s',l:'HVAC Full Service',ic:'ti-temperature',f:'quarterly',mo:[2,5,8,11],h:['denmark','stonegate'],n:'Schedule pro: spring = A/C check, fall = furnace check. Book early.'},
+  {id:'gutters',l:'Gutter Clean & Inspect',ic:'ti-home-2',f:'quarterly',mo:[3,9],h:['denmark','stonegate'],n:'Clear debris, check fascia, confirm downspout directs away from foundation'},
+  {id:'wh',l:'Water Heater Flush',ic:'ti-wave-saw-tool',f:'semi-annual',mo:[4,10],h:['denmark','stonegate'],n:'Flush sediment, inspect anode rod, test pressure relief valve'},
+  {id:'ext',l:'Exterior Walk-Through',ic:'ti-eye',f:'semi-annual',mo:[4,10],h:['denmark','stonegate'],n:'Roof, foundation, siding, windows, caulking — photo document issues'},
+  {id:'dry',l:'Dryer Vent Cleaning',ic:'ti-rotate-clockwise',f:'semi-annual',mo:[1,7],h:['denmark','stonegate'],n:'#1 cause of house fires. Clean full duct + check exterior cap is clear.'},
+  {id:'chim',l:'Chimney / Fireplace',ic:'ti-home-eco',f:'annual',mo:[8],h:['denmark','stonegate'],n:'Annual pro cleaning & inspection before heating season (September)'},
+  {id:'plumb',l:'Plumbing Inspection',ic:'ti-tool',f:'annual',mo:[10],h:['denmark','stonegate'],n:'All shut-off valves, water pressure, check for slow leaks under every sink'},
+  {id:'elec',l:'Electrical Panel Check',ic:'ti-bolt',f:'annual',mo:[9],h:['denmark','stonegate'],n:'Inspect panel for heat marks, test all GFCI outlets, check outdoor outlets'},
+  {id:'roof',l:'Roof Inspection',ic:'ti-building',f:'annual',mo:[9],h:['denmark','stonegate'],n:'Shingles, flashing, vents, soffits. Inspect after any hail or wind storm.'},
+  {id:'pest_p',l:'Pro Pest Inspection',ic:'ti-search',f:'annual',mo:[4],h:['denmark','stonegate'],n:'Annual professional termite & pest inspection (in addition to DIY monthly)'},
+  {id:'garage',l:'Garage Door Service',ic:'ti-garage',f:'annual',mo:[3],h:['denmark'],n:'Lubricate rollers, springs, hinges. Test auto-reverse safety. Check seals.'},
+  {id:'cont_r',l:'Contractor Contact Review',ic:'ti-address-book',f:'annual',mo:[2],h:['denmark','stonegate'],n:'Verify all Contacts tab numbers are still current and accurate'},
+  {id:'well',l:'Well Water Test',ic:'ti-test-pipe',f:'annual',mo:[5],h:['stonegate'],n:'Test bacteria, nitrates, pH, hardness — critical after spring thaw'},
+  {id:'septic',l:'Septic Inspection',ic:'ti-filter',f:'annual',mo:[5],h:['stonegate'],n:'Pump every 3–5 yrs. Annual: slow drains, odors, wet spots in yard'},
+  {id:'shore',l:'Shoreline Check',ic:'ti-ripple',f:'semi-annual',mo:[4,9],h:['stonegate'],n:'Erosion, vegetation, invasive species — WI DNR: 608-267-7494'},
+  {id:'rodent',l:'Rodent Entry Check',ic:'ti-home-shield',f:'semi-annual',mo:[3,10],h:['stonegate'],n:'Seal all gaps. October critical — mice actively seek winter shelter.'},
+  {id:'wintr',l:'Winterize Plumbing',ic:'ti-snowflake',f:'annual',mo:[9],h:['stonegate'],n:'Drain ALL lines, blow out with compressor. New Lisbon avg freeze: Oct 5–15!'},
+  {id:'s_plumb',l:'Spring Plumbing Restore',ic:'ti-tool',f:'annual',mo:[4],h:['stonegate'],n:'Open valve slowly, check all connections for freeze damage before full use'},
+  {id:'gen',l:'Generator Service',ic:'ti-bolt',f:'semi-annual',mo:[4,9],h:['stonegate'],n:'Run 30 min under load, annual oil change, fresh fuel + stabilizer, check battery'},
+  {id:'s_open',l:'Full Spring Opening',ic:'ti-key',f:'annual',mo:[4],h:['stonegate'],n:'See Checklists tab for full 20-point cabin opening protocol'},
+  {id:'f_close',l:'Full Fall Closing',ic:'ti-lock',f:'annual',mo:[9],h:['stonegate'],n:'See Checklists tab — 22-point protocol. Complete BEFORE October 15!'},
+  {id:'freeze',l:'WI Freeze Watch',ic:'ti-thermometer',f:'annual',mo:[10],h:['stonegate'],n:'Confirm pipes winterized. New Lisbon avg first hard freeze: Oct 5–15.'},
+  {id:'thaw',l:'Spring Thaw Flood Check',ic:'ti-droplets',f:'annual',mo:[3],h:['stonegate'],n:'Mar–Apr WI thaw flood risk. Check sump pump, drainage, grading around foundation.'},
+];
+
+const DC={
+  denmark:[
+    {id:'d_e1',cat:'Emergency',l:'Emergency 911',p:'911',n:'Fire / Police / Medical',em:true},
+    {id:'d_e2',cat:'Emergency',l:'Oregon Police (Non-Emergency)',p:'608-835-3304',n:''},
+    {id:'d_e3',cat:'Emergency',l:'Dane County Sheriff',p:'608-255-2345',n:'Non-emergency dispatch'},
+    {id:'d_e4',cat:'Emergency',l:"SSM Health St. Mary's — Madison",p:'608-251-6100',n:'Nearest major hospital'},
+    {id:'d_e5',cat:'Emergency',l:'Poison Control',p:'800-222-1222',n:'24/7 nationwide'},
+    {id:'d_u1',cat:'Utilities',l:'MGE Gas & Electric',p:'608-252-7111',n:'Emergency 24/7 — outages & gas leaks'},
+    {id:'d_u2',cat:'Utilities',l:'Village of Oregon Water',p:'608-835-3300',n:''},
+    {id:'d_u3',cat:'Utilities',l:'Internet / Cable',p:'',n:''},
+    {id:'d_h1',cat:'HVAC',l:'HVAC Contractor',p:'',n:''},
+    {id:'d_p1',cat:'Plumbing',l:'Plumber',p:'',n:''},
+    {id:'d_el1',cat:'Electrical',l:'Electrician',p:'',n:''},
+    {id:'d_r1',cat:'Roofing',l:'Roofer',p:'',n:''},
+    {id:'d_hm1',cat:'Handyman',l:'Handyman / General',p:'',n:''},
+    {id:'d_ln1',cat:'Lawn',l:'Lawn & Landscaping',p:'',n:''},
+    {id:'d_sn1',cat:'Snow Removal',l:'Snow Removal',p:'',n:''},
+    {id:'d_ap1',cat:'Appliances',l:'Appliance Repair',p:'',n:''},
+    {id:'d_ps1',cat:'Pest Control',l:'Pro Pest Backup',p:'',n:'For when DIY needs reinforcement'},
+    {id:'d_in1',cat:'Insurance',l:'Home Insurance Agent',p:'',n:''},
+  ],
+  stonegate:[
+    {id:'s_e1',cat:'Emergency',l:'Emergency 911',p:'911',n:'Fire / Police / Medical',em:true},
+    {id:'s_e2',cat:'Emergency',l:'New Lisbon Police',p:'608-562-3152',n:'Non-emergency'},
+    {id:'s_e3',cat:'Emergency',l:'Juneau County Sheriff',p:'608-847-5649',n:'Non-emergency'},
+    {id:'s_e4',cat:'Emergency',l:'Mayo Clinic Health — Mauston',p:'608-847-2000',n:'~15 min from Stone Gate Lake'},
+    {id:'s_e5',cat:'Emergency',l:'Poison Control',p:'800-222-1222',n:'24/7 nationwide'},
+    {id:'s_u1',cat:'Utilities',l:'Alliant Energy (Electric)',p:'800-255-4268',n:'Power outages 24/7'},
+    {id:'s_u2',cat:'Utilities',l:'WI DNR — Lake Issues',p:'608-267-7494',n:'Invasive species / water quality'},
+    {id:'s_w1',cat:'Well Service',l:'Well Company',p:'',n:''},
+    {id:'s_sp1',cat:'Septic',l:'Septic Pump & Service',p:'',n:''},
+    {id:'s_h1',cat:'HVAC',l:'HVAC / Furnace',p:'',n:''},
+    {id:'s_p1',cat:'Plumbing',l:'Plumber',p:'',n:''},
+    {id:'s_el1',cat:'Electrical',l:'Electrician',p:'',n:''},
+    {id:'s_g1',cat:'Generator',l:'Generator Service',p:'',n:''},
+    {id:'s_r1',cat:'Roofing',l:'Roofer / General Contractor',p:'',n:''},
+    {id:'s_hm1',cat:'Handyman',l:'Local Handyman',p:'',n:'Mauston / New Lisbon area'},
+    {id:'s_ps1',cat:'Pest Control',l:'Pest Control',p:'',n:''},
+    {id:'s_nb1',cat:'Neighbors',l:'Property Watch Neighbor',p:'',n:'Stone Gate Lake community'},
+    {id:'s_in1',cat:'Insurance',l:'Lake House Insurance',p:'',n:''},
+    {id:'s_hoa',cat:'Community',l:'Stone Gate Lake Association',p:'',n:''},
+  ]
+};
+
+const CL_DEF={
+  spring_denmark:{title:'Spring Prep — 1230 Denmark',sub:'Run every April / May',items:['Replace HVAC filter','Schedule A/C professional service before June','Pest control perimeter treatment (DIY)','Test all smoke detectors — replace batteries','Test all CO detectors','Restart & clean dehumidifier — target 45–55% humidity','Inspect roof & gutters after winter','Exterior walk: foundation, siding, caulking, window seals','Test sump pump — pour water to confirm float trigger','Turn on exterior hose bibs — check for freeze damage','Service lawn mower: oil, blade, spark plug','Clean full dryer vent duct','Check attic for ice dam damage or pest activity','Test all GFCI outlets inside and outside','Check garage door auto-reverse safety feature','Flush water heater (semi-annual)','Clean window screens','Review home insurance renewal date']},
+  fall_denmark:{title:'Fall Prep — 1230 Denmark',sub:'Complete by November 1',items:['Replace HVAC filter','Schedule furnace professional tune-up','Pest control — seal entry points before winter','Clean gutters after all leaves have fallen','Inspect roof for loose shingles before first freeze','Disconnect & store garden hoses — shut off exterior hose bibs','Test smoke & CO detectors','Check attic insulation & ventilation','Service snow blower / prep snow removal gear','Check weatherstripping on all doors & windows','Test sump pump before ground freezes','Flush water heater (semi-annual)','Stock emergency kit: flashlights, batteries, bottled water','Trim branches near house before ice storms','Inspect fireplace / chimney before first use of season']},
+  spring_stonegate:{title:'Spring Opening — Stone Gate Lake',sub:'Complete BEFORE using water — May',items:['Restore main water supply — open valve very slowly','Check ALL pipe connections for freeze damage before full pressure','Run all faucets — check under sinks & toilets for leaks','Flush water heater — check for sediment buildup','Test well pump operation — check pressure tank reading','Test smoke & CO detectors — replace batteries','Test & start generator — run 30 min under load','Inspect roof & gutters for winter damage','Exterior walk: foundation, siding, windows, animal entry points','Inspect shoreline — erosion, debris from ice','Open & test all appliances (fridge, stove, microwave, dishwasher)','Check septic: wet spots in yard, slow drains, any odors','Check for rodent activity — set traps if signs found','Replace furnace / HVAC filter','Test all electrical outlets — press GFCI test buttons','Stock pantry & emergency supplies','Verify all Contacts tab numbers are current','Walk full property — take photos documenting current condition','Check fire extinguisher charge & expiry','Notify property watch neighbor you have arrived']},
+  fall_stonegate:{title:'Fall Closing — Stone Gate Lake',sub:'COMPLETE BEFORE OCTOBER 15 — Wisconsin freeze risk!',items:['Shut off main water supply completely','Open ALL faucets to fully drain — hot & cold at every fixture','Flush all toilets until completely empty','Blow out ALL water lines with air compressor','Pour RV antifreeze in every P-trap (sinks, tubs, toilets, floor drains)','Drain water heater completely','Drain washing machine hoses fully','Set thermostat to 55°F minimum — NEVER fully off','Shut off water heater or set to vacation/pilot mode','Turn off gas supply if fully seasonal cabin','Disconnect & drain all exterior hose bibs','Run generator — add fuel stabilizer for off-season storage','Remove or cover all outdoor furniture & equipment','Clean out ALL food — nothing that freezes or attracts animals','Empty fridge & freezer — leave doors propped open','Shut off water softener if applicable','Lock & secure all window latches — check for gaps','Notify property watch neighbor you are closing up','Lock all doors & windows — full perimeter walkthrough','Leave emergency contact list visible inside for service personnel','Final walk-through — take condition photos for records','Confirm insurance is active for unoccupied winter period']}
+};
+
+const MF=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const FL={monthly:'Monthly',quarterly:'Quarterly','semi-annual':'Semi-Annual',annual:'Annual'};
+const FC={'monthly':'#0f766e','quarterly':'#6d28d9','semi-annual':'#b45309','annual':'#b91c1c'};
+const today=new Date();
+const CM=today.getMonth(),CY=today.getFullYear();
+
+let S={home:'denmark',tab:'overview',sv:'month',vm:CM,vy:CY,done:{},contacts:JSON.parse(JSON.stringify(DC)),notes:{denmark:'',stonegate:''},cl:{},cf:'All'};
+Object.entries(CL_DEF).forEach(([k,v])=>{S.cl[k]={...v,done:new Array(v.items.length).fill(false)};});
+
+function ls(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}}
+function lw(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+function loadAll(){const td=ls('pcc_td');if(td)S.done=td;const ct=ls('pcc_ct');if(ct)S.contacts=ct;const nt=ls('pcc_nt');if(nt)S.notes=nt;const cl=ls('pcc_cl');if(cl)S.cl=cl;init();}
+
+function hcr(h){return h==='denmark'?'#14b8a6':'#0ea5e9';}
+function tk(id,h,m,y){return h+'_'+id+'_'+m+'_'+y;}
+function isd(id,h,m,y){return!!S.done[tk(id,h,m,y)];}
+function hl(h){return h==='denmark'?'1230 Denmark':'Stone Gate Lake';}
+
+function switchHome(h){
+  S.home=h;
+  document.getElementById('hb-dk').className='btn'+(h==='denmark'?' h1a':'');
+  document.getElementById('hb-sg').className='btn'+(h==='stonegate'?' h2a':'');
+  render();
+}
+function goTab(t){
+  S.tab=t;
+  document.querySelectorAll('[data-tab]').forEach(el=>{el.dataset.tab===t?el.setAttribute('data-active',''):el.removeAttribute('data-active');});
+  document.querySelectorAll('[id^="nav-"]').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('nav-'+t);if(nb)nb.classList.add('active');
+  render();
+}
+function render(){
+  if(S.tab==='overview')renderOv();
+  if(S.tab==='schedule')renderSched();
+  if(S.tab==='contacts')renderCont();
+  if(S.tab==='checklists')renderCL();
+  if(S.tab==='notes')renderNotes();
+}
+
+function renderOv(){
+  const el=document.getElementById('tab-overview');if(!el)return;
+  const cards=['denmark','stonegate'].map(h=>{
+    const ht=TASKS.filter(t=>t.h.includes(h)&&t.mo.includes(CM));
+    const hd=ht.filter(t=>isd(t.id,h,CM,CY)).length;
+    const pct=ht.length?Math.round((hd/ht.length)*100):100;
+    const c=hcr(h);
+    const pending=ht.filter(t=>!isd(t.id,h,CM,CY));
+    const tags=pending.slice(0,3).map(t=>`<span class="tag">${t.l}</span>`).join('')+(pending.length>3?`<span class="tag">+${pending.length-3} more</span>`:'');
+    return `<div class="card" style="cursor:pointer;border-left:4px solid ${c}" onclick="switchHome('${h}');goTab('schedule')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div><div style="font-size:15px;font-weight:700">${hl(h)}</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:2px">${h==='denmark'?'Oregon, WI · Dane County':'W5563 Setting Sun Ct · New Lisbon, WI'}</div></div>
+        <div style="text-align:right"><div style="font-size:22px;font-weight:700;color:${pct===100?'#10b981':c}">${pct}%</div>
+        <div style="font-size:10px;color:#94a3b8">${MS[CM]} ${CY}</div></div>
+      </div>
+      <div class="pbar"><div class="pfill" style="width:${pct}%;background:${pct===100?'#10b981':c}"></div></div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:6px">${hd}/${ht.length} tasks complete</div>
+      ${tags?`<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">${tags}</div>`:''}
+    </div>`;
+  }).join('');
+  const allMT=TASKS.filter(t=>t.mo.includes(CM));
+  const taskRows=allMT.map(t=>{
+    const badges=t.h.map(h=>{const done=isd(t.id,h,CM,CY);return `<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:${done?'#d1fae5':'#f1f5f9'};color:${done?'#065f46':hcr(h)};border:1px solid ${done?'#6ee7b7':'#e2e8f0'}">${done?'✓ ':''}${h==='denmark'?'Denmark':'Stone Gate'}</span>`;}).join('');
+    return `<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid #f8fafc">
+      <i class="ti ${t.ic}" style="font-size:15px;color:#94a3b8;margin-top:1px"></i>
+      <div style="flex:1"><div style="font-size:13px;font-weight:500">${t.l}</div>
+      <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap">${badges}</div></div>
+      <span class="tag">${FL[t.f]}</span></div>`;
+  }).join('');
+  el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-bottom:18px">${cards}</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:18px">
+    ${[['Tasks This Month',allMT.length],['Properties','2'],['Total Tasks',TASKS.length],['Contacts Saved',[...S.contacts.denmark,...S.contacts.stonegate].filter(c=>c.p).length]].map(([lb,val])=>`
+    <div style="background:#f8fafc;border-radius:10px;padding:14px"><div style="font-size:22px;font-weight:700">${val}</div><div style="font-size:11px;color:#94a3b8;margin-top:3px">${lb}</div></div>`).join('')}
+  </div>
+  <div class="card"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${MF[CM]} ${CY} — All Tasks Across Both Properties</div>${taskRows||'<div style="color:#94a3b8;text-align:center;padding:20px">No tasks this month</div>'}</div>`;
+}
+
+function renderSched(){
+  const el=document.getElementById('tab-schedule');if(!el)return;
+  const h=S.home;const c=hcr(h);
+  const svBtns=`<div style="display:flex;gap:6px;margin-bottom:14px">
+    <button class="btn${S.sv==='month'?' active':''}" onclick="setSV('month')">Month</button>
+    <button class="btn${S.sv==='year'?' active':''}" onclick="setSV('year')">Year</button>
+    <button class="btn${S.sv==='all'?' active':''}" onclick="setSV('all')">All Tasks</button>
+  </div>`;
+  if(S.sv==='month'){
+    const m=S.vm,y=S.vy;
+    const mt=TASKS.filter(t=>t.h.includes(h)&&t.mo.includes(m));
+    const md=mt.filter(t=>isd(t.id,h,m,y)).length;
+    const pct=mt.length?Math.round((md/mt.length)*100):100;
+    let rows='';
+    ['monthly','quarterly','semi-annual','annual'].forEach(freq=>{
+      const ft=mt.filter(t=>t.f===freq);if(!ft.length)return;
+      rows+=`<div class="sec-hdr" style="color:${FC[freq]}">${FL[freq]}</div>`;
+      ft.forEach(task=>{
+        const done=isd(task.id,h,m,y);
+        rows+=`<div class="trow" onclick="togTask('${task.id}','${h}',${m},${y})">
+          <div class="chk" style="${done?`background:${c};border-color:${c}`:'border-color:#cbd5e1'}">${done?'<i class="ti ti-check" style="font-size:11px;color:white"></i>':''}</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:${done?400:500};color:${done?'#94a3b8':'#0f172a'};text-decoration:${done?'line-through':'none'}">${task.l}</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:3px;line-height:1.5">${task.n}</div></div>
+          ${done?`<span style="font-size:10px;color:${c};font-weight:600;white-space:nowrap">DONE</span>`:''}
+        </div>`;
+      });
+    });
+    el.innerHTML=svBtns+`<div class="card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="btn" onclick="prevM()"><i class="ti ti-chevron-left"></i></button>
+          <div><div style="font-size:16px;font-weight:700">${MF[m]} ${y}</div>
+          ${m===CM&&y===CY?`<div style="font-size:10px;letter-spacing:1px;color:${c};text-transform:uppercase;font-weight:600">Current Month</div>`:''}</div>
+          <button class="btn" onclick="nextM()"><i class="ti ti-chevron-right"></i></button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="text-align:right"><div style="font-size:22px;font-weight:700;color:${pct===100?'#10b981':c}">${pct}%</div>
+          <div style="font-size:11px;color:#94a3b8">${md}/${mt.length} done</div></div>
+          <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+            <circle cx="22" cy="22" r="18" fill="none" stroke="#f1f5f9" stroke-width="3.5"/>
+            <circle cx="22" cy="22" r="18" fill="none" stroke="${pct===100?'#10b981':c}" stroke-width="3.5" stroke-dasharray="${((pct/100)*113.1).toFixed(1)} 113.1" stroke-linecap="round" transform="rotate(-90 22 22)"/>
+          </svg>
+        </div>
+      </div>
+    </div>${mt.length===0?'<div style="text-align:center;color:#94a3b8;padding:30px">No tasks this month</div>':rows}`;
+  } else if(S.sv==='year'){
+    const grid=MS.map((ms,mi)=>{
+      const mT=TASKS.filter(t=>t.h.includes(h)&&t.mo.includes(mi));
+      const mD=mT.filter(t=>isd(t.id,h,mi,S.vy)).length;
+      const mp=mT.length?Math.round((mD/mT.length)*100):100;
+      const isCur=mi===CM&&S.vy===CY;
+      return `<div class="card" style="cursor:pointer;${isCur?`border-color:${c};border-width:2px`:''}" onclick="S.vm=${mi};setSV('month')">
+        <div style="font-size:13px;font-weight:700;color:${isCur?c:'#475569'}">${ms}${isCur?' ←':''}</div>
+        ${mT.length===0?'<div style="font-size:10px;color:#94a3b8;margin-top:5px">Free</div>':`
+        <div style="font-size:10px;color:#94a3b8;margin:5px 0">${mD}/${mT.length}</div>
+        <div class="pbar"><div class="pfill" style="width:${mp}%;background:${mp===100?'#10b981':c}"></div></div>`}
+      </div>`;
+    }).join('');
+    el.innerHTML=svBtns+`<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <button class="btn" onclick="S.vy--;renderSched()"><i class="ti ti-chevron-left"></i></button>
+      <span style="font-size:15px;font-weight:700">${S.vy}</span>
+      <button class="btn" onclick="S.vy++;renderSched()"><i class="ti ti-chevron-right"></i></button>
+    </div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px">${grid}</div>`;
+  } else {
+    let rows='';
+    ['monthly','quarterly','semi-annual','annual'].forEach(freq=>{
+      const ft=TASKS.filter(t=>t.f===freq&&t.h.includes(h));if(!ft.length)return;
+      rows+=`<div class="sec-hdr" style="color:${FC[freq]}">${FL[freq]}</div>`;
+      ft.forEach(task=>{
+        const moBadges=task.mo.map(mi=>`<span class="tag" style="${mi===CM?'background:#eff6ff;color:#1d4ed8;border-color:#93c5fd':''}">${MS[mi]}</span>`).join('');
+        rows+=`<div class="card" style="margin-bottom:8px"><div style="font-size:13px;font-weight:600">${task.l}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:3px;line-height:1.5">${task.n}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">${moBadges}</div></div>`;
+      });
+    });
+    el.innerHTML=svBtns+rows;
+  }
+}
+function setSV(v){S.sv=v;renderSched();}
+function prevM(){if(S.vm===0){S.vm=11;S.vy--;}else S.vm--;renderSched();}
+function nextM(){if(S.vm===11){S.vm=0;S.vy++;}else S.vm++;renderSched();}
+function togTask(id,h,m,y){const k=tk(id,h,m,y);S.done[k]=!S.done[k];lw('pcc_td',S.done);render();}
+
+function renderCont(){
+  const el=document.getElementById('tab-contacts');if(!el)return;
+  const h=S.home;const c=hcr(h);
+  const cats=['All',...new Set(S.contacts[h].map(x=>x.cat))];
+  const filtered=S.cf==='All'?S.contacts[h]:S.contacts[h].filter(x=>x.cat===S.cf);
+  const grouped={};filtered.forEach(x=>{if(!grouped[x.cat])grouped[x.cat]=[];grouped[x.cat].push(x);});
+  const catBtns=cats.map(cat=>`<button class="btn${S.cf===cat?' active':''}" onclick="setCF('${cat}')">${cat}</button>`).join('');
+  let rows='';
+  Object.entries(grouped).forEach(([cat,items])=>{
+    const isEm=cat==='Emergency';
+    rows+=`<div class="sec-hdr" style="color:${isEm?'#ef4444':'#475569'}">${cat}</div>`;
+    items.forEach(ct=>{
+      rows+=`<div class="card" style="margin-bottom:8px;${ct.em?'border-color:#fca5a5;background:#fff5f5':''}">
+        <div style="display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:180px">
+            <input value="${ct.l.replace(/"/g,'&quot;')}" placeholder="Contact name" onchange="updC('${h}','${ct.id}','l',this.value)" style="${ct.em?'font-weight:700;color:#dc2626':'font-weight:500'}">
+            <input value="${(ct.n||'').replace(/"/g,'&quot;')}" placeholder="Add note..." onchange="updC('${h}','${ct.id}','n',this.value)" style="margin-top:6px;font-size:11px">
+          </div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <input value="${ct.p||''}" placeholder="Phone number" onchange="updC('${h}','${ct.id}','p',this.value)" style="width:130px;text-align:center;${ct.p?`color:${isEm?'#dc2626':c};font-weight:500`:''}">
+            ${ct.p?`<a href="tel:${ct.p}" style="background:${isEm?'#ef4444':c};color:white;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:600;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:4px"><i class="ti ti-phone" style="font-size:13px"></i> Call</a>`:''}
+          </div>
+        </div>
+      </div>`;
+    });
+  });
+  el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+    <div style="font-size:14px;font-weight:700">Contacts — ${hl(h)}</div>
+    <div style="font-size:11px;color:#94a3b8">Click any field to edit • Tap Call to dial</div>
+  </div>
+  <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:16px">${catBtns}</div>${rows}
+  <div style="font-size:11px;color:#94a3b8;text-align:center;margin-top:12px">All edits save automatically</div>`;
+}
+function setCF(cat){S.cf=cat;renderCont();}
+function updC(h,id,field,val){const i=S.contacts[h].findIndex(c=>c.id===id);if(i>=0){S.contacts[h][i][field]=val;lw('pcc_ct',S.contacts);}}
+
+function renderCL(){
+  const el=document.getElementById('tab-checklists');if(!el)return;
+  const h=S.home;const c=hcr(h);
+  const keys=h==='denmark'?['spring_denmark','fall_denmark']:['spring_stonegate','fall_stonegate'];
+  let html='';
+  keys.forEach(key=>{
+    const list=S.cl[key];const dc=list.done.filter(Boolean).length;const pct=Math.round((dc/list.items.length)*100);
+    html+=`<div class="card" style="margin-bottom:18px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div><div style="font-size:14px;font-weight:700">${list.title}</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:2px">${list.sub}</div></div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="text-align:right"><div style="font-size:20px;font-weight:700;color:${pct===100?'#10b981':c}">${pct}%</div>
+          <div style="font-size:10px;color:#94a3b8">${dc}/${list.items.length}</div></div>
+          <button class="btn" onclick="resetCL('${key}')"><i class="ti ti-refresh"></i> Reset</button>
+        </div>
+      </div>
+      <div class="pbar" style="margin-bottom:12px"><div class="pfill" style="width:${pct}%;background:${pct===100?'#10b981':c}"></div></div>
+      ${list.items.map((item,i)=>`
+      <div class="trow" onclick="togCL('${key}',${i})">
+        <div class="chk" style="${list.done[i]?`background:${c};border-color:${c}`:'border-color:#cbd5e1'}">${list.done[i]?'<i class="ti ti-check" style="font-size:11px;color:white"></i>':''}</div>
+        <span style="font-size:13px;color:${list.done[i]?'#94a3b8':'#0f172a'};text-decoration:${list.done[i]?'line-through':'none'};line-height:1.6">${item}</span>
+      </div>`).join('')}
+    </div>`;
+  });
+  el.innerHTML=html;
+}
+function togCL(key,i){S.cl[key].done[i]=!S.cl[key].done[i];lw('pcc_cl',S.cl);renderCL();}
+function resetCL(key){S.cl[key].done=new Array(S.cl[key].items.length).fill(false);lw('pcc_cl',S.cl);renderCL();}
+
+function renderNotes(){
+  const el=document.getElementById('tab-notes');if(!el)return;
+  const h=S.home;
+  el.innerHTML=`<div style="font-size:14px;font-weight:700;margin-bottom:4px">Notes — ${hl(h)}</div>
+  <div style="font-size:11px;color:#94a3b8;margin-bottom:12px">Work log, service dates, issues noticed, contractor feedback — keep everything here.</div>
+  <textarea id="nta" rows="18" placeholder="Notes for ${hl(h)}...&#10;&#10;Examples:&#10;&#8226; HVAC filter replaced 05/28/2026 — 4-inch Filtrete 1500&#10;&#8226; Drip under kitchen sink — tightened supply line 06/01/2026&#10;&#8226; Pest spray: north perimeter + basement 06/01/2026">${S.notes[h]||''}</textarea>
+  <div style="font-size:11px;color:#94a3b8;text-align:right;margin-top:6px">Auto-saves as you type</div>`;
+  document.getElementById('nta').addEventListener('input',e=>{S.notes[h]=e.target.value;lw('pcc_nt',S.notes);});
+}
+
+// ═══════ REPORT FOR BEKAH ═══════
+function openReport(){
+  const dateStr=today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  let html=`<div style="font-size:12px;color:#94a3b8;margin-bottom:16px">Report generated: ${dateStr}</div>`;
+  let printHtml=`<h1 style="font-size:22px;margin-bottom:4px;font-family:Georgia,serif">Property Status Report</h1>
+  <p style="color:#475569;margin-bottom:4px;font-size:13px">Prepared: ${dateStr}</p>
+  <p style="color:#475569;margin-bottom:20px;font-size:13px">1230 Denmark, Oregon WI &nbsp;|&nbsp; Stone Gate Lake, New Lisbon WI</p><hr style="margin:0 0 20px">`;
+
+  ['denmark','stonegate'].forEach(h=>{
+    const c=hcr(h);const label=hl(h);
+    const mt=TASKS.filter(t=>t.h.includes(h)&&t.mo.includes(CM));
+    const done=mt.filter(t=>isd(t.id,h,CM,CY));
+    const pending=mt.filter(t=>!isd(t.id,h,CM,CY));
+    const pct=mt.length?Math.round((done.length/mt.length)*100):100;
+    const notes=S.notes[h]?S.notes[h].trim():'';
+    const clKeys=h==='denmark'?['spring_denmark','fall_denmark']:['spring_stonegate','fall_stonegate'];
+    const clLines=clKeys.map(k=>{const cl=S.cl[k];const dc=cl.done.filter(Boolean).length;return `${cl.title}: ${dc}/${cl.items.length} (${Math.round((dc/cl.items.length)*100)}%)`;}).join('<br>');
+
+    html+=`<div style="margin-bottom:20px;padding:18px;background:#f8fafc;border-radius:12px;border-left:4px solid ${c}">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:16px;font-weight:700">${label}</div>
+        <div style="font-size:20px;font-weight:700;color:${pct===100?'#10b981':c}">${pct}%</div>
+      </div>
+      <div class="pbar" style="margin-bottom:12px"><div class="pfill" style="width:${pct}%;background:${pct===100?'#10b981':c}"></div></div>
+      ${done.length?`<div style="margin-bottom:10px">
+        <div style="font-size:11px;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">✅ Completed This Month (${done.length}/${mt.length})</div>
+        ${done.map(t=>`<div style="font-size:13px;padding:3px 0;color:#065f46"><span style="color:#10b981">✓</span> ${t.l}</div>`).join('')}
+      </div>`:''}
+      ${pending.length?`<div style="margin-bottom:10px">
+        <div style="font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">⏳ Still Pending (${pending.length})</div>
+        ${pending.map(t=>`<div style="font-size:13px;padding:3px 0;color:#78350f">○ ${t.l}</div>`).join('')}
+      </div>`:''}
+      <div style="font-size:11px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:8px">${clLines}</div>
+      ${notes?`<div style="margin-top:10px;padding:10px;background:white;border-radius:8px;font-size:12px;line-height:1.7;color:#475569;white-space:pre-wrap">${notes}</div>`:''}
+    </div>`;
+
+    printHtml+=`<h2 style="font-size:16px;border-bottom:2px solid ${c};padding-bottom:6px;margin:0 0 12px;font-family:Georgia,serif">${label} — ${pct}% Complete</h2>
+    ${done.length?`<p style="font-weight:700;color:#065f46;margin-bottom:6px">Completed This Month (${done.length}/${mt.length}):</p>${done.map(t=>`<p style="margin:3px 0 3px 14px;font-size:13px">✓ ${t.l}</p>`).join('')}<br>`:''}
+    ${pending.length?`<p style="font-weight:700;color:#92400e;margin-bottom:6px">Still Pending:</p>${pending.map(t=>`<p style="margin:3px 0 3px 14px;font-size:13px">○ ${t.l}</p>`).join('')}<br>`:''}
+    <p style="font-size:12px;color:#64748b">${clLines.replace(/<br>/g,' | ')}</p>
+    ${notes?`<p style="font-weight:700;margin:10px 0 4px;font-size:13px">Notes:</p><p style="white-space:pre-wrap;color:#475569;font-size:13px">${notes}</p>`:''}
+    <hr style="margin:16px 0">`;
+  });
+
+  document.getElementById('rpt-content').innerHTML=html;
+  document.getElementById('print-only').innerHTML=`<div style="padding:30px;font-family:Georgia,serif;max-width:720px;margin:0 auto">${printHtml}<p style="font-size:11px;color:#94a3b8;margin-top:20px;text-align:center">Property Command Center — Denmark & Stone Gate Lake</p></div>`;
+  document.getElementById('pm').classList.add('open');
+}
+function closeReport(){document.getElementById('pm').classList.remove('open');}
+function copyRpt(){
+  const txt=document.getElementById('rpt-content').innerText;
+  navigator.clipboard.writeText(txt).then(()=>alert('Report copied to clipboard! Paste into a text or email for Bekah.')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('Report copied!');
+  });
+}
+
+function init(){
+  document.getElementById('hdr-date').textContent=today.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  renderOv();
+}
+loadAll();
+</script>
+</body>
+</html>
